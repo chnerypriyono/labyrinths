@@ -87,7 +87,7 @@ function handleMove(x, y) {
 		currentY = y
 		
 		if (typeAtCoord === TYPE_FINISH) {
-			//console.log("finish")
+			gameFinished()	
 			currentX = -1
 			currentY = -1
 		}
@@ -95,12 +95,21 @@ function handleMove(x, y) {
 }
 
 function gameOver() {
-	//alert("game over")
+	alert("game over")
 	//console.log("game over")
 	currentX = -1
 	currentY = -1
-	ctx.clearRect(0, 0, AREA_WIDTH, AREA_HEIGHT)
-	ctx.drawImage(img, 0, 0, AREA_WIDTH, AREA_HEIGHT)
+	ctx.clearRect(0, 0, canvas.width, canvas.height)
+	ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+}
+
+function gameFinished() {
+	alert("finish")
+	//console.log(finish")
+	currentX = -1
+	currentY = -1
+	ctx.clearRect(0, 0, canvas.width, canvas.height)
+	ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
 }
 
 function handleUp() {
@@ -155,8 +164,3 @@ function isPlayStarted() {
 	return currentX !== -1 && currentY !== -1
 }
 
-function refreshImage() {
-	alert("clicked")
-	ctx.clearRect(0, 0, AREA_WIDTH, AREA_HEIGHT)
-	//ctx.drawImage(img, 0, 0, AREA_WIDTH, AREA_HEIGHT)
-}
