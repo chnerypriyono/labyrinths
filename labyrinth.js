@@ -8,9 +8,6 @@ const canvas = document.getElementById("playArea");
 const aButton = document.getElementById("aButton");
 const ctx = canvas.getContext("2d", { willReadFrequently: true } );
 
-const AREA_WIDTH = canvas.clientWidth
-const AREA_HEIGHT = canvas.clientHeight
-
 var viewportOffset = canvas.getBoundingClientRect();
 // these are relative to the viewport, i.e. the window
 var canvasTop = viewportOffset.top;
@@ -20,10 +17,8 @@ const img = new Image()
 img.crossOrigin = "Anonymous"
 //img.src = 'https://i.ibb.co/0hLRybY/Screenshot-2024-02-20-at-21-23-02.png'
 img.src = 'https://i.ibb.co/Xfnc3gs/Screenshot-2024-02-20-at-21-23-02-copy.png'
-
-
 img.onload = function() {
-	//ctx.drawImage(img, 0, 0, AREA_WIDTH, AREA_HEIGHT)
+	ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
 }
 
 let currentX = -1
@@ -51,6 +46,9 @@ canvas.onmousedown = function(event) {
 }
 
 canvas.onmousemove = function(event) {
+	console.log(event.offsetX, event.offsetY)
+	let colorAtCoord = ctx.getImageData(event.offsetX, event.offsetY, 1, 1).data
+	console.log(colorAtCoord)
 	handleMove(event.offsetX, event.offsetY)
 }
 
@@ -60,6 +58,7 @@ canvas.onmouseup = function(event) {
 }
 
 function handleDown(x, y) {
+	console.log(getTypeAtCoord(x, y))
 	if (getTypeAtCoord(x, y) === TYPE_START) {
 		//console.log("start")
 		currentX = event.offsetX
