@@ -1,3 +1,64 @@
+class Timer {
+
+    constructor(displayArea) {
+        this.minutes        = 0;
+        this.seconds        = 0;
+        this.centiseconds   = 0;
+        this.timerHandler   = null;
+        this.displayArea    = displayArea;       
+    }
+
+    start() {
+
+    	var _this = this
+
+    	reset();
+
+        this.timerHandler = setInterval(function () {        	
+            display();
+            increment();          
+        }, 10);          
+
+        function increment () {        
+            _this.centiseconds++;
+            if (_this.centiseconds > 99) {
+                _this.centiseconds = 0;
+                _this.seconds++;
+                if (_this.seconds > 59) {
+                    _this.seconds = 0;
+                    _this.minutes++;
+                    if (_this.minutes > 59) {
+                        clearInterval(_this.timerHandler);
+                    }
+                }
+            }
+        }
+
+        function display() {        	
+            _this.displayArea.innerHTML = format(_this.minutes) + ':' + format(_this.seconds) + ":" + format(_this.centiseconds)
+
+            function format(number) {
+                if (number < 10) {
+                    return '0' + number;
+                } else {
+                    return number;
+                }
+            }
+        };      
+
+        function reset() {
+        	_this.minutes        = 0;
+	        _this.seconds        = 0;
+	        _this.centiseconds   = 0;
+        }
+    }
+
+    stop() {
+        clearInterval(this.timerHandler)
+    }
+}
+
+
 const TYPE_WAY = 1
 const TYPE_WALL = 2
 const TYPE_START = 3
@@ -5,7 +66,7 @@ const TYPE_FINISH = 4
 const TYPE_TRAIL = 5
 
 const canvas = document.getElementById("playArea");
-const aButton = document.getElementById("aButton");
+const timerDisplay = document.getElementById("timerDisplay");
 const ctx = canvas.getContext("2d", { willReadFrequently: true } );
 
 var viewportOffset = canvas.getBoundingClientRect();
@@ -20,6 +81,8 @@ img.src = 'https://i.ibb.co/Xfnc3gs/Screenshot-2024-02-20-at-21-23-02-copy.png'
 img.onload = function() {
 	ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
 }
+
+const timer = new Timer(timerDisplay);
 
 let currentX = -1
 let currentY = -1
@@ -46,9 +109,9 @@ canvas.onmousedown = function(event) {
 }
 
 canvas.onmousemove = function(event) {
-	console.log(event.offsetX, event.offsetY)
-	let colorAtCoord = ctx.getImageData(event.offsetX, event.offsetY, 1, 1).data
-	console.log(colorAtCoord)
+	// console.log(event.offsetX, event.offsetY)
+	// let colorAtCoord = ctx.getImageData(event.offsetX, event.offsetY, 1, 1).data
+	// console.log(colorAtCoord)
 	handleMove(event.offsetX, event.offsetY)
 }
 
@@ -58,9 +121,10 @@ canvas.onmouseup = function(event) {
 }
 
 function handleDown(x, y) {
-	console.log(getTypeAtCoord(x, y))
+	//console.log(getTypeAtCoord(x, y))
 	if (getTypeAtCoord(x, y) === TYPE_START) {
 		//console.log("start")
+		timer.start()
 		currentX = event.offsetX
 		currentY = event.offsetY
 	}
@@ -95,6 +159,7 @@ function handleMove(x, y) {
 }
 
 function gameOver() {
+	timer.stop()
 	alert("game over")
 	//console.log("game over")
 	currentX = -1
@@ -104,6 +169,7 @@ function gameOver() {
 }
 
 function gameFinished() {
+	timer.stop()
 	alert("finish")
 	//console.log(finish")
 	currentX = -1
@@ -163,4 +229,5 @@ function isHittingWall(typeAtCoord) {
 function isPlayStarted() {
 	return currentX !== -1 && currentY !== -1
 }
+
 
